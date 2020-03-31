@@ -29,21 +29,21 @@ set(CMAKE_CUDA_FLAGS "--expt-extended-lambda")
 find_package(OpenCV REQUIRED opencv_core)
 
 ### Create actual retinanet target
-set(retinanet_headers
-    src/cuda/decode.h
-    src/cuda/nms.h
-    src/cuda/utils.h
+set(retinanet_public_headers
     src/engine.h
-    src/calibrator.h
     )
 add_library(retinanet
+    src/calibrator.h
     src/cuda/decode.cu
+    src/cuda/decode.h
     src/cuda/nms.cu
+    src/cuda/nms.h
+    src/cuda/utils.h
     src/engine.cpp
-    ${retinanet_headers}
     )
 set_target_properties(retinanet PROPERTIES 
     CUDA_RESOLVE_DEVICE_SYMBOLS ON
+    PUBLIC_HEADER ${retinanet_public_headers}
     )
 
 target_link_libraries(retinanet PUBLIC TensorRT opencv_core cuda)
@@ -51,13 +51,13 @@ target_link_libraries(retinanet PUBLIC TensorRT opencv_core cuda)
 ### Installation stuff
 # *.a + export found target
 set(lib_dest lib/retinanet)
-install(TARGETS retinanet EXPORT retinanet DESTINATION ${lib_dest})
+set(inc_dest include/retinanet)
+install(TARGETS retinanet
+    EXPORT retinanet
+    LIBRARY DESTINATION ${lib_dest}
+    PUBLIC_HEADER DESTINATION ${inc_dest}
+    )
+
+install(FILES retinanet-config.cmake DESTINATION ${lib_dest})
 install(TARGETS TensorRT EXPORT retinanet)
 install(TARGETS cuda EXPORT retinanet)
-install(EXPORT retinanet DESTINATION ${lib_dest})
-
-# for find_package
-install(FILES retinanet-config.cmake DESTINATION ${lib_dest})
-
-# headers
-install(FILES ${retinanet_headers} DESTINATION include/retinanet)
