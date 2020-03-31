@@ -30,16 +30,16 @@ find_package(OpenCV REQUIRED opencv_core)
 
 ### Create actual retinanet target
 set(retinanet_headers
-    cuda/decode.h
-    cuda/nms.h
-    cuda/utils.h
-    engine.h
-    calibrator.h
+    src/cuda/decode.h
+    src/cuda/nms.h
+    src/cuda/utils.h
+    src/engine.h
+    src/calibrator.h
     )
 add_library(retinanet
-    cuda/decode.cu
-    cuda/nms.cu
-    engine.cpp
+    src/cuda/decode.cu
+    src/cuda/nms.cu
+    src/engine.cpp
     ${retinanet_headers}
     )
 set_target_properties(retinanet PROPERTIES 
