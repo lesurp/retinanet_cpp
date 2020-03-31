@@ -29,33 +29,30 @@
 
 #include <cuda_runtime.h>
 
-using namespace std;
-using namespace nvinfer1;
-
 namespace retinanet {
 
 // RetinaNet wrapper around TensorRT CUDA engine
 class Engine {
 public:
     // Create engine from engine path
-    Engine(const string &engine_path, bool verbose=false);
+    Engine(const std::string &engine_path, bool verbose=false);
 
     // Create engine from serialized onnx model
-    Engine(const char *onnx_model, size_t onnx_size, size_t batch, string precision,
-        float score_thresh, int top_n, const vector<vector<float>>& anchors,
-        float nms_thresh, int detections_per_im, const vector<string>& calibration_files,
-        string model_name, string calibration_table, bool verbose, size_t workspace_size=(1ULL << 30));
+    Engine(const char *onnx_model, size_t onnx_size, size_t batch, std::string precision,
+        float score_thresh, int top_n, const std::vector<std::vector<float>>& anchors,
+        float nms_thresh, int detections_per_im, const std::vector<std::string>& calibration_files,
+        std::string model_name, std::string calibration_table, bool verbose, size_t workspace_size=(1ULL << 30));
 
     ~Engine();
 
     // Save model to path
-    void save(const string &path);
+    void save(const std::string &path);
 
     // Infer using pre-allocated GPU buffers {data, scores, boxes, classes}
-    void infer(vector<void *> &buffers);
+    void infer(std::vector<void *> &buffers);
 
     // Get (h, w) size of the fixed input
-    vector<int> getInputSize();
+    std::vector<int> getInputSize();
 
     // Get max allowed batch size
     int getMaxBatchSize();
@@ -67,12 +64,12 @@ public:
     int getStride();
 
 private:
-    IRuntime *_runtime = nullptr;
-    ICudaEngine *_engine = nullptr;
-    IExecutionContext *_context = nullptr;
+    nvinfer1::IRuntime *_runtime = nullptr;
+    nvinfer1::ICudaEngine *_engine = nullptr;
+    nvinfer1::IExecutionContext *_context = nullptr;
     cudaStream_t _stream = nullptr;
 
-    void _load(const string &path);
+    void _load(const std::string &path);
     void _prepare();
 
 };
