@@ -3,7 +3,7 @@ project(retinanet_cpp)
 set(CMAKE_CXX_STANDARD 14)
 
 ################### compiler flags {
-set(Release_FLAGS "-O3"
+set(Release_FLAGS "-O3 -DNDEBUG"
 CACHE STRING
 "Flags to pass to the compiler for the 'Release' configuration")
 set(RelWithDebInfo_FLAGS "-O2 -g"
