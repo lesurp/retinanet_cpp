@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.11)
 project(retinanet_cpp)
 set(CMAKE_CXX_STANDARD 14)
 
+option(BUILD_EXAMPLES "Build example programs" ON)
+
 ################### compiler flags {
 set(Release_FLAGS "-O3 -DNDEBUG"
 CACHE STRING
@@ -47,6 +49,7 @@ set(dependencies opencv_core TensorRT cuda)
 ################### source files {
 set(public_hdr
     src/engine.h
+    src/inferer.h
 )
 set(private_src
     src/calibrator.h
@@ -56,6 +59,7 @@ set(private_src
     src/cuda/nms.h
     src/cuda/utils.h
     src/engine.cpp
+    src/inferer.cpp
 )
 ################### } source files
 
@@ -90,3 +94,9 @@ endforeach()
 install(FILES retinanet-config.cmake DESTINATION ${main_lib_dest})
 install(FILES ${public_hdr} DESTINATION include/retinanet)
 ################### } create and install targets
+
+################### build examples {
+if(${BUILD_EXAMPLES})
+    add_subdirectory(examples)
+endif()
+################### } build examples
